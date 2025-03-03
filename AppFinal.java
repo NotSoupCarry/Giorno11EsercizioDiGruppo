@@ -27,8 +27,10 @@ class Utente {
         this.risposta = risposta;
         this.punti = 0;
     }
+}
 
-    // #region metodi gestione utente
+// Classe per la Gestione utente
+class GestioneUtente {
     // Metodo per la registrazione di un utente
     public static void registrazione(Scanner scanner, List<Utente> registroUtenti) {
         System.out.print("Inserisci il nome utente: ");
@@ -261,7 +263,6 @@ class Utente {
         }
     }
 
-    // #endregion
 }
 
 // #region Menus
@@ -272,7 +273,7 @@ class Menu {
         int scelta;
         boolean exitMainMenu = false;
         System.out.println("\n==== Benvenuto in Portale Gioco Matematico Maximus ====");
-        
+
         while (!exitMainMenu) {
             System.out.println("\n==== Menu Principale ====");
             System.out.println("1. Login");
@@ -286,16 +287,16 @@ class Menu {
 
             switch (scelta) {
                 case 1:
-                    Utente utenteLoggato = Utente.login(scanner, AppFinal.registroUtenti);
+                    Utente utenteLoggato = GestioneUtente.login(scanner, AppFinal.registroUtenti);
                     if (utenteLoggato != null) {
                         menuSecondario(scanner, utenteLoggato);
                     }
                     break;
                 case 2:
-                    Utente.registrazione(scanner, AppFinal.registroUtenti);
+                    GestioneUtente.registrazione(scanner, AppFinal.registroUtenti);
                     break;
                 case 3:
-                    Utente.stampaUtenti(AppFinal.registroUtenti);
+                    GestioneUtente.stampaUtenti(AppFinal.registroUtenti);
                     break;
                 case 4:
                     System.out.println("Uscita dal programma.");
@@ -326,18 +327,18 @@ class Menu {
 
             switch (scelta) {
                 case 1:
-                    Utente.cambiaUsername(utente, scanner);
+                    GestioneUtente.cambiaUsername(utente, scanner);
                     break;
                 case 2:
-                    if (Utente.cambiaPassword(utente, scanner)) {
+                    if (GestioneUtente.cambiaPassword(utente, scanner)) {
                         return; // Torna direttamente al menu principale se la password è cambiata
                     }
                     break;
                 case 3:
-                    Utente.cambiaDomandaSegreta(utente, scanner);
+                    GestioneUtente.cambiaDomandaSegreta(utente, scanner);
                     break;
                 case 4:
-                    Utente.iniziaGioco(utente, scanner);
+                    GestioneUtente.iniziaGioco(utente, scanner);
                     break;
                 case 5:
                     System.out.println("Logout effettuato con successo.");
