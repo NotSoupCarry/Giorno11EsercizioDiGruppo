@@ -78,8 +78,7 @@ class Utente {
         } else {
             System.out.println("Elenco utenti registrati:");
             for (Utente utente : registroUtenti) {
-                System.out.println(
-                        "Nome: " + utente.nome + " | Punti: " + utente.punti + " | Livello: " + utente.livello);
+                System.out.println("Utente: " + utente.nome);
             }
         }
     }
