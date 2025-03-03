@@ -82,7 +82,9 @@ public class AppFinal {
             System.out.println("Cosa vuoi fare?");
             System.out.println("1. Mostra punti e livello");
             System.out.println("2. Inizia il test matematico");
-            System.out.println("3. Esci");
+            System.out.println("3. Cambia nome utente");
+            System.out.println("4. Cambia password");
+            System.out.println("5. Esci");
 
             int scelta = scanner.nextInt();
             scanner.nextLine();  // Consuming the leftover newline
@@ -92,12 +94,44 @@ public class AppFinal {
             } else if (scelta == 2) {
                 iniziaTest(utente);
             } else if (scelta == 3) {
+                cambiaUsername(utente);
+            } else if (scelta == 4) {
+                cambiaPassword(utente);
+            } else if (scelta == 5) {
                 System.out.println("Uscita...");
                 break;
             } else {
                 System.out.println("Scelta non valida.");
             }
         }
+    }
+
+    // Metodo per cambiare il nome utente
+    public static void cambiaUsername(Utente utente) {
+        System.out.println("Inserisci il nuovo nome utente:");
+        String nuovoNome = scanner.nextLine();
+
+        // Verifica se il nome utente è già in uso
+        for (Utente utenteEsistente : registroUtenti) {
+            if (utenteEsistente.nome.equals(nuovoNome)) {
+                System.out.println("Il nome utente è già stato preso. Scegli un altro nome.");
+                return;
+            }
+        }
+
+        // Cambia il nome utente
+        utente.nome = nuovoNome;
+        System.out.println("Nome utente cambiato con successo!");
+    }
+
+    // Metodo per cambiare la password
+    public static void cambiaPassword(Utente utente) {
+        System.out.println("Inserisci la nuova password:");
+        String nuovaPassword = scanner.nextLine();
+
+        // Cambia la password
+        utente.password = nuovaPassword;
+        System.out.println("Password cambiata con successo!");
     }
 
     // Metodo per iniziare il test matematico
