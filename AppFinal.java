@@ -271,7 +271,8 @@ class Menu {
     public static void menuPrincipale(Scanner scanner) {
         int scelta;
         boolean exitMainMenu = false;
-
+        System.out.println("\n==== Benvenuto in Portale Gioco Matematico Maximus ====");
+        
         while (!exitMainMenu) {
             System.out.println("\n==== Menu Principale ====");
             System.out.println("1. Login");
