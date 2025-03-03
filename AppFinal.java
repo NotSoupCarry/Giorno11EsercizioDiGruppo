@@ -16,14 +16,16 @@ public class AppFinal {
 class Utente {
     String nome;
     String password;
+    String domandaSegreta;
+    String risposta;
     int punti;
-    int livello;
 
-    public Utente(String nome, String password) {
+    public Utente(String nome, String password, String domandaSegreta, String risposta) {
         this.nome = nome;
         this.password = password;
-        this.punti = 100;
-        this.livello = 1;
+        this.domandaSegreta = domandaSegreta;
+        this.risposta = risposta;
+        this.punti = 0;
     }
 
     // #region metodi gestione utente
@@ -41,8 +43,15 @@ class Utente {
         System.out.print("Inserisci la password: ");
         String password = Controlli.controlloInputStringhe(scanner);
 
+        System.out.print("Inserisci la Domanda Segreta: ");
+        String domandaSegreta = Controlli.controlloInputStringhe(scanner);
+
+        System.out.print("Inserisci la risposta alla Domanda Segreta: ");
+        String risposta = Controlli.controlloInputStringhe(scanner);
+
         // Crea e aggiunge un nuovo utente
-        Utente nuovoUtente = new Utente(nome, password);
+        Utente nuovoUtente = new Utente(nome, password, domandaSegreta, risposta);
+
         registroUtenti.add(nuovoUtente);
         System.out.println("Registrazione completata con successo!");
     }
@@ -115,7 +124,7 @@ class Utente {
         }
     }
 
-    // Metodo per cambiare la password
+    // Metodo per cambiare la password con verifica della domanda segreta
     public static boolean cambiaPassword(Utente utente, Scanner scanner) {
         System.out.print("Inserisci la password attuale: ");
         String passwordAttuale = Controlli.controlloInputStringhe(scanner);
@@ -123,6 +132,15 @@ class Utente {
         // Controllo se la password inserita è corretta
         if (!utente.password.equals(passwordAttuale)) {
             System.out.println("Errore: La password attuale non è corretta!");
+            return false;
+        }
+
+        System.out.print("Rispondi alla domanda segreta: " + utente.domandaSegreta + " ");
+        String rispostaUtente = Controlli.controlloInputStringhe(scanner);
+
+        // Controllo se la risposta alla domanda segreta è corretta
+        if (!utente.risposta.equalsIgnoreCase(rispostaUtente)) {
+            System.out.println("Errore: La risposta alla domanda segreta non è corretta!");
             return false;
         }
 
@@ -143,20 +161,49 @@ class Utente {
         }
     }
 
+    // Metodo per cambiare la domanda segreta e la risposta
+    public static boolean cambiaDomandaSegreta(Utente utente, Scanner scanner) {
+        System.out.print("Inserisci la nuova domanda segreta: ");
+        String nuovaDomanda = Controlli.controlloInputStringhe(scanner);
+
+        System.out.print("Inserisci la risposta alla nuova domanda segreta: ");
+        String nuovaRisposta = Controlli.controlloInputStringhe(scanner);
+
+        // Conferma la modifica
+        System.out.print("Confermi la modifica della domanda segreta? (s/n): ");
+        String conferma = Controlli.controlloInputStringhe(scanner).trim().toLowerCase();
+
+        if (conferma.equals("s")) {
+            utente.domandaSegreta = nuovaDomanda;
+            utente.risposta = nuovaRisposta;
+            System.out.println("Domanda segreta aggiornata con successo!");
+            return true;
+        } else {
+            System.out.println("Operazione annullata.");
+            return false;
+        }
+    }
+
     // Metodo per iniziare il gioco matematico
     public static void iniziaGioco(Utente utente, Scanner scanner) {
         Random rand = new Random();
         int livello = 1;
-        int domandePerLivello = 1;
-        int punteggioPerDomanda = 50;
+        final int domandePerLivello = 1;
+        final int punteggioPerDomanda = 50;
+        utente.punti = 100;
 
         System.out.println("\n=== Inizio Test Matematico ===");
         System.out.println("Ogni risposta corretta ti darà " + punteggioPerDomanda + " punti.");
         System.out.println("Ogni risposta sbagliata ti toglierà " + punteggioPerDomanda + " punti.");
-        System.out.println("Per avanzare al livello successivo, devi guadagnare almeno 50 punti.\n");
+        System.out.println("Per avanzare al livello successivo, devi rispondere correttamente a tutte le domande!\n");
+        System.out.println("Punti attuali: " + utente.punti + "\n");
 
         while (livello <= 3 && utente.punti > 0) {
-            System.out.println("Livello " + livello + " - Rispondi a " + domandePerLivello + " domande!");
+            System.out.println("=== Livello " + livello + " ===");
+            System.out.println(
+                    "Devi rispondere correttamente a tutte le " + domandePerLivello + " domande per avanzare!\n");
+
+            boolean haRispostoTutteCorrettamente = true;
 
             for (int i = 0; i < domandePerLivello; i++) {
                 int num1 = rand.nextInt(10) + 1;
@@ -184,14 +231,15 @@ class Utente {
                 int rispostaUtente = Controlli.controlloInputInteri(scanner);
 
                 if (rispostaUtente == rispostaCorretta) {
-                    System.out.println("Risposta corretta! +10 punti");
+                    System.out.println("Risposta corretta! +50 punti");
                     utente.punti += punteggioPerDomanda;
                 } else {
                     System.out.println("Risposta sbagliata! La risposta corretta era: " + rispostaCorretta);
                     utente.punti -= punteggioPerDomanda;
+                    haRispostoTutteCorrettamente = false; // L'utente ha sbagliato almeno una domanda
 
                     if (utente.punti <= 0) {
-                        System.out.println("\nHai perso tutti i punti! Game over. 😢");
+                        System.out.println("\nHai perso tutti i punti! Game over.");
                         return;
                     }
                 }
@@ -199,9 +247,12 @@ class Utente {
                 System.out.println("Punti attuali: " + utente.punti + "\n");
             }
 
-            if (utente.punti >= 50) {
+            // Se ha risposto bene a tutte le domande del livello, avanza
+            if (haRispostoTutteCorrettamente) {
                 livello++;
                 System.out.println("Complimenti! Sei passato al livello " + livello + "!\n");
+            } else {
+                System.out.println("Hai sbagliato almeno una domanda! Riprova il livello " + livello + ".\n");
             }
         }
 
@@ -209,6 +260,7 @@ class Utente {
             System.out.println("Hai completato il test matematico con " + utente.punti + " punti!");
         }
     }
+
     // #endregion
 }
 
@@ -263,8 +315,9 @@ class Menu {
             System.out.println("\n==== Menu Utente ====");
             System.out.println("1. Modifica Username");
             System.out.println("2. Modifica password");
-            System.out.println("3. Gioca");
-            System.out.println("4. Logout");
+            System.out.println("3. Modifica domanda segreta(e risposta)");
+            System.out.println("4. Gioca");
+            System.out.println("5. Logout");
 
             System.out.print("Scegli un'opzione (1-3): ");
             scelta = Controlli.controlloInputInteri(scanner);
@@ -280,9 +333,12 @@ class Menu {
                     }
                     break;
                 case 3:
-                    Utente.iniziaGioco(utente, scanner);
+                    Utente.cambiaDomandaSegreta(utente, scanner);
                     break;
                 case 4:
+                    Utente.iniziaGioco(utente, scanner);
+                    break;
+                case 5:
                     System.out.println("Logout effettuato con successo.");
                     exitSecondaryMenu = true;
                     break;
