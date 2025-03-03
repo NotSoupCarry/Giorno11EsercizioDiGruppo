@@ -26,7 +26,7 @@ class Utente {
         this.livello = 1;
     }
 
-    //#region metodi gestione utente
+    // #region metodi gestione utente
     // Metodo per la registrazione di un utente
     public static void registrazione(Scanner scanner, List<Utente> registroUtenti) {
         System.out.print("Inserisci il nome utente: ");
@@ -117,27 +117,30 @@ class Utente {
     }
 
     // Metodo per cambiare la password
-    public static void cambiaPassword(Utente utente, Scanner scanner) {
+    public static boolean cambiaPassword(Utente utente, Scanner scanner) {
         System.out.print("Inserisci la password attuale: ");
         String passwordAttuale = Controlli.controlloInputStringhe(scanner);
 
         // Controllo se la password inserita è corretta
         if (!utente.password.equals(passwordAttuale)) {
             System.out.println("Errore: La password attuale non è corretta!");
-            return;
+            return false;
         }
 
         System.out.print("Inserisci la nuova password: ");
         String nuovaPassword = Controlli.controlloInputStringhe(scanner);
 
         // Conferma la modifica
-        System.out.println("Confermi la modifica della password? (s/n): ");
+        System.out.print("Confermi la modifica della password? (s/n): ");
         String conferma = Controlli.controlloInputStringhe(scanner).trim().toLowerCase();
+
         if (conferma.equals("s")) {
             utente.password = nuovaPassword;
-            System.out.println("Password cambiata con successo!");
+            System.out.println("Password cambiata con successo! Verrai reindirizzato al menu principale.");
+            return true; // Indica che il cambio è avvenuto con successo
         } else {
             System.out.println("Operazione annullata.");
+            return false;
         }
     }
 
@@ -207,10 +210,10 @@ class Utente {
             System.out.println("Hai completato il test matematico con " + utente.punti + " punti!");
         }
     }
-    //#endregion
+    // #endregion
 }
 
-//#region Menus
+// #region Menus
 // Classe Menu
 class Menu {
     // menu principale
@@ -273,7 +276,9 @@ class Menu {
                     Utente.cambiaUsername(utente, scanner);
                     break;
                 case 2:
-                    Utente.cambiaPassword(utente, scanner);
+                    if (Utente.cambiaPassword(utente, scanner)) {
+                        return; // Torna direttamente al menu principale se la password è cambiata
+                    }
                     break;
                 case 3:
                     Utente.iniziaGioco(utente, scanner);
@@ -288,9 +293,9 @@ class Menu {
         }
     }
 }
-//#endregion
+// #endregion
 
-//#region controlli input
+// #region controlli input
 // Classe Controlli
 class Controlli {
     // Metodo per controllare che l'input stringa non sia vuoto
@@ -322,4 +327,4 @@ class Controlli {
     }
 }
 
-//#endregion
+// #endregion
